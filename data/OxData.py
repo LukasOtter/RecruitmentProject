@@ -6,11 +6,15 @@ Created on  10.12.2020
 
 """
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
 class OxData():
     data_file = 'sensor-data-60seconds.csv'
     
     def __init__(self, 
-                 root: str, 
+                 #root: str, 
                  file = 'sensor-data-60seconds.csv',
                  ) -> None:
         
@@ -19,9 +23,13 @@ class OxData():
         self.dataType = "OxData"
         self.file = file
 
-        data_path = './data/' + file
+        # pointer to reference different samples
+        self.dataPointer = 0
 
-        self.data = 1
+        #data_path = './data/' + file
+
+        self.data = pd.read_csv('./data/' + file)
+        self.data.head()
 
         # add code to load data into pandas dataframe
 

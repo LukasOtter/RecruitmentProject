@@ -7,9 +7,9 @@ Created on Thu Nov 12 14:56:28 2020
 Class for dataset to allow embedding in GUI
 """
 
-import time
-from datetime import timedelta
+import matplotlib.pyplot as plt
 from copy import deepcopy
+import numpy as np
 
 # custom datasets
 from data.OxData import OxData
@@ -28,9 +28,6 @@ class Dataset:
         
         ''' specific dataset name + general parameters'''
         self.name = name
-        self.dataSize = 500
-        '''data transformations:'''        
-        kwargs = {'batch_size': args.batch_size}
         
         ''' type: IMAGE or EEG '''
         if self.name in self.OxData_DATASETS:
@@ -92,7 +89,31 @@ class Dataset:
     #     return dataSettings
 
     # ''' function calls '''
-    # def plotData(self,fig):
-    #     #plotStuff(self.dataset_data_C1, self.dataset_data_C2, self.name,fig)
-    #     return 0
+    def plotData(self,fig):
+
+        #xTickArray = np.arange(7)*0.2*128
+        #xTickLabels = np.arange(-1,6)*200
+        plt.rcParams.update({'font.size': 8})
+        # optional thresholding
+        # print(dataC1.shape)
+        # print(dataC2.shape)
+        # dataC1, noisyDataC1 = separateOutliers(dataC1,2.01)
+        # dataC2, noisyDataC2 = separateOutliers(dataC2,2.01)
+        # print(dataC1.shape)
+        # print(dataC2.shape)
+        ''' average plot ''' 
+        ax = plt.gca()
+        plt.setp(ax.spines.values(), linewidth=2)
+        #plt.grid(True)
+        plt.plot(np.arange(0,150),np.random.randint(-2,3,(150,))) #,cmap='viridis')
+        #plt.clim(limit_low,limit_high) 
+        #plt.set_cmap('viridis')
+        plt.title('Pleth signal')
+        #plt.xticks(xTickArray,xTickLabels)
+        plt.xlabel('time [ms]')
+        plt.ylabel('channels')
+
+        return 0
         
+    def calculateOx(self):
+        return 85
