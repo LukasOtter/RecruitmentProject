@@ -15,8 +15,8 @@ from copy import deepcopy
 from data.OxData import OxData
 
 # plotting
-from skimage.transform import resize
-from skimage.io import imshow
+#from skimage.transform import resize
+#from skimage.io import imshow
 
 class Dataset:
     def __init__(self, name):

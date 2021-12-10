@@ -6,8 +6,7 @@ Created on  10.12.2020
 
 """
 
-
-class OxData(VisionDataset):
+class OxData():
     data_file = 'sensor-data-60seconds.csv'
     
     def __init__(self, 
@@ -20,7 +19,7 @@ class OxData(VisionDataset):
         self.dataType = "OxData"
         self.file = file
 
-        path = './data/' + file
+        data_path = './data/' + file
 
         self.data = 1
 

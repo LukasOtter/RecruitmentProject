@@ -89,7 +89,7 @@ class Application(tk.Frame):
         self.initializePannel()
             
         ''' create default datsets (first array entry) '''
-        self.datasetOxData = Dataset(self.datasetOxData.get(),'EEGNet')
+        self.datasetOxData = 1 # Dataset(self.datasetOxData.get(),'EEGNet')
         #self.datasetEEG = Dataset(self.datasetEEGName.get(),'EEGNet')
         #exit()
   
@@ -206,7 +206,7 @@ class Application(tk.Frame):
         self.datasetOxDataName.set(DATASETS_OxData[0]) # default value
         
         ''' options menues for OxData '''
-        self.optOxData = OptionMenu(self, self.datasetOxData, *DATASETS_OxData)
+        self.optOxData = OptionMenu(self, self.datasetOxDataName, *DATASETS_OxData)
         #self.optOxData["label"] = "Image dataset"
         self.optOxData.place(x = 410, y = 0)
         
@@ -216,16 +216,16 @@ class Application(tk.Frame):
         self.optOxDataLabel.place(x = 320, y = 0)
         
         
-        ''' add buttons for shift analysis '''
-        self.shiftEEG = Button(self, text='Analyze\ntemporal\nshift\n(EEG)', command=self.shift_analysis_EEG,height = 6, width = 10)
-        self.shiftEEG.place(x = 1000, y = 50)
+        # ''' add buttons for shift analysis '''
+        # self.shiftEEG = Button(self, text='Analyze\ntemporal\nshift\n(EEG)', command=self.shift_analysis_EEG,height = 6, width = 10)
+        # self.shiftEEG.place(x = 1000, y = 50)
         
-        self.shiftImage = Button(self, text='Analyze\ntemporal\nshift\n(Image)', command=self.shift_analysis_Image,height = 6, width = 10)
-        self.shiftImage.place(x = 1090, y = 50)
+        # self.shiftImage = Button(self, text='Analyze\ntemporal\nshift\n(Image)', command=self.shift_analysis_Image,height = 6, width = 10)
+        # self.shiftImage.place(x = 1090, y = 50)
         
-        ''' add buttons for shift analysis '''
-        self.rankData = Button(self, text='Rank\nsynthetic\ndataset\n', command=self.rank_Dataset,height = 6, width = 10)
-        self.rankData.place(x = 1180, y = 50)
+        # ''' add buttons for shift analysis '''
+        # self.rankData = Button(self, text='Rank\nsynthetic\ndataset\n', command=self.rank_Dataset,height = 6, width = 10)
+        # self.rankData.place(x = 1180, y = 50)
         
         ''' Evaluation parameters '''
         self.labelframeEvalParams = LabelFrame(self.master, text="Evaluation parameters:", height = 200, width = 200)
