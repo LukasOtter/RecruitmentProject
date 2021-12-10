@@ -22,14 +22,15 @@ class OxData():
 
         self.dataType = "OxData"
         self.file = file
-
-        # pointer to reference different samples
-        self.dataPointer = 0
+        
+        self.dataPointer = 0      # pointer to reference different samples
+        self.Fs = 75              # sampling frequency
+        self.window = 5*self.Fs   # 5 second window
 
         #data_path = './data/' + file
 
-        self.data = pd.read_csv('./data/' + file)
-        self.data.head()
+        self.data = pd.read_csv('./data/' + file,sep = ";")
+        #print(self.data['PLETH'].head())
 
         # add code to load data into pandas dataframe
 

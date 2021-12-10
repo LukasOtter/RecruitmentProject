@@ -89,7 +89,7 @@ class Application(tk.Frame):
         self.initializePannel()
             
         ''' create default datsets (first array entry) '''
-        self.datasetOxData =  Dataset(self.datasetOxDataName.get())
+        self.dataset =  Dataset(self.datasetName.get())
         #exit()
   
     def initializePannel(self): 
@@ -131,11 +131,11 @@ class Application(tk.Frame):
         DATASETS_OxData = [
             "MNIST"
             ]
-        self.datasetOxDataName = StringVar(self)
-        self.datasetOxDataName.set(DATASETS_OxData[0]) # default value
+        self.datasetName = StringVar(self)
+        self.datasetName.set(DATASETS_OxData[0]) # default value
         
         ''' options menues for OxData '''
-        self.optOxData = OptionMenu(self, self.datasetOxDataName, *DATASETS_OxData)
+        self.optOxData = OptionMenu(self, self.datasetName, *DATASETS_OxData)
         #self.optOxData["label"] = "Image dataset"
         self.optOxData.place(x = 410, y = 0)
         
@@ -199,7 +199,7 @@ class Application(tk.Frame):
         print(self.dataSettings)
         
 
-        #self.datasetOxData.updateDatasets(self.dataSettings, self.datasetOxName.get(),
+        #self.dataset.updateDatasets(self.dataSettings, self.datasetOxName.get(),
         #                                     [self.change_C1.get(),self.change_C2.get()])
         
         ''' reset/create canvas '''
@@ -222,14 +222,14 @@ class Application(tk.Frame):
         self.canvas.get_tk_widget().pack(side=tk.RIGHT, fill=tk.NONE, expand=False) 
         #self.canvas.get_tk_widget().place(x=320, y=40)
         
-        self.datasetOxData.plotData(self.figureHandle)
+        self.dataset.plotData(self.figureHandle)
 
         # toolbar = NavigationToolbar2Tk(canvas, self)
         # toolbar.update()
         # canvas._tkcanvas.pack(side=tk.RIGHT, fill=tk.NONE, expand=True)
         
         ''' update SNR estimation '''
-        im_oxygen_value = self.datasetOxData.calculateOx()
+        #im_oxygen_value = self.dataset.calculateOx()
         
         #self.im_Oxygen.configure(text = "Oxygen:\t" + str(round(im_oxygen_value,2)))
 
@@ -238,7 +238,7 @@ class Application(tk.Frame):
  
     # def configureDatasetParameters(self):
     #     ''' update dataset paramater pannel values '''
-    #     dataSettingsOxData = self.datasetOxData.returnDataSettings('C1')
+    #     dataSettingsOxData = self.dataset.returnDataSettings('C1')
 
         
     def popup_bonus(self):

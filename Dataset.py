@@ -43,50 +43,12 @@ class Dataset:
     def createDatasets(self):
         ''' creates datasets according to settings, case distinction '''
         ''' create dataset '''
-        if self.datasetType == "OxData":
-            dataset_OxData = self.createOxDataDataset()
-            self.dataset_OxData = dataset_OxData
-                
-    # def updateDatasets(self,dataSettings,name,transformOn):
-    #     ''' updates transform parameters + datasize '''
-    #     self.name = name
-  
-    #     if self.datasetType == "Image":
-    #         if self.name == 'MNIST':   
-    #             if transformOn[0] is True:
-    #                 transform = self.updateTransformation(dataSettings,self.transform_C1)
-    #                 self.transform_C1 = transform
-    #                 self.updateDataSettings(dataSettings,'C1')
-    #             if transformOn[1] is True:    
-    #                 transform = self.updateTransformation(dataSettings,self.transform_C2)
-    #                 self.transform_C2 = transform
-    #                 self.updateDataSettings(dataSettings,'C2')
-    #     elif self.datasetType == "EEG":
-    #         if self.name in self.EEG_DATASETS:
-    #             transform = self.updateTransformation(dataSettings,self.transform)
-    #             self.updateDataSettings(dataSettings,'C1')
-    #             self.updateDataSettings(dataSettings,'C2')
-    #             self.transform = transform
-    #             #print(transform)
-            
-    #     self.createDatasets()
+        if self.datasetType == "OxData": 
+            self.OxData= OxData()
            
     def updateTransformation(self,dataSettings,transformIn):
         transform = deepcopy(transformIn)
         return transform
-    
-    ''' separated OxData build method '''
-    def createOxDataDataset(self):
-        ###
-        dataset = OxData()
-        return dataset
-    
-    # def updateDataSettings(self,dataSettings):     
-    #     self.dataSettings = dataSettings    
-        
-    # def returnDataSettings(self):
-    #     dataSettings = 1 #self.dataSettingsC2['class ratio']  
-    #     return dataSettings
 
     # ''' function calls '''
     def plotData(self,fig):
@@ -105,13 +67,21 @@ class Dataset:
         ax = plt.gca()
         plt.setp(ax.spines.values(), linewidth=2)
         #plt.grid(True)
-        plt.plot(np.arange(0,150),np.random.randint(-2,3,(150,))) #,cmap='viridis')
+
+        dataPointer = self.OxData.dataPointer
+        window = self.OxData.window
+        data = self.OxData.data['PLETH'][dataPointer:dataPointer+window]
+        #data = np.random.randint(-2,3,(150,))
+        plt.plot(np.arange(0,len(data)),data) #,cmap='viridis')
         #plt.clim(limit_low,limit_high) 
         #plt.set_cmap('viridis')
         plt.title('Pleth signal')
         #plt.xticks(xTickArray,xTickLabels)
         plt.xlabel('time [ms]')
         plt.ylabel('channels')
+
+        # increment data pointer for next window
+        self.OxData.dataPointer = dataPointer + window
 
         return 0
         
