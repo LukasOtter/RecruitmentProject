@@ -18,6 +18,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 
+from math import floor,ceil
+import numpy as np
+import time
+
 class Application(tk.Frame):
     # def __init__(self, master=None):
     #     super().__init__(master)
@@ -41,9 +45,14 @@ class Application(tk.Frame):
         
      # Define settings upon initialization. Here you can specify
     def __init__(self, master=None):
+
+        # define color scheme
+        self.bgColor = "grey18"     # background color
+        self.bdColor = ""           # border color
+        self.fgColor = "grey90"           # font color       
         
         # parameters that you want to send through the Frame class. 
-        Frame.__init__(self, master)   
+        Frame.__init__(self, master, bg=self.bgColor)   
 
         #reference to the master widget, which is the tk window                 
         self.master = master
@@ -62,7 +71,7 @@ class Application(tk.Frame):
         self.pack(fill=BOTH, expand=1)
 
         # creating a menu instance
-        menu = Menu(self.master)
+        menu = Menu(self.master, bg=self.bgColor,fg=self.fgColor)
         self.master.config(menu=menu)
 
         # create the file object)
@@ -86,16 +95,17 @@ class Application(tk.Frame):
         menu.add_cascade(label="Edit", menu=edit)
 
         ''' define all window elements and initalize their values '''
-        self.initializePannel()
+        self.initializeUI()
             
         ''' create default datsets (first array entry) '''
         self.dataset =  Dataset(self.datasetName.get())
         #exit()
   
-    def initializePannel(self): 
+    def initializeUI(self): 
 
         ''' add bool for class-specific manipulations '''
-        self.labelframeChange = LabelFrame(self.master, text="Settings:", height = 95, width = 120)
+        self.labelframeChange = LabelFrame(self.master, text="Settings:", height = 95, width = 120, bg=self.bgColor,
+                                            fg=self.fgColor)
         self.labelframeChange.place(x = 320, y = 525)
         
         self.change_C1 = tk.BooleanVar(self)
@@ -116,15 +126,17 @@ class Application(tk.Frame):
         self.dimRed = tk.BooleanVar(self)
         self.dimRed.set(False)
         self.check3 = Checkbutton(self.labelframeChange , text="Reduce Dim ",variable=self.dimRed,
-                                     onvalue=True, offvalue=False)
+                                     onvalue=True, offvalue=False, bg=self.bgColor,fg=self.fgColor)
         self.check3.place(x = 0, y = 45)
 
         ''' add bars for data manipulation settings '''
-        self.labelframeSettings = LabelFrame(self.master, text="Data visualization", height = 510, width = 810)
+        self.labelframeSettings = LabelFrame(self.master, text="Data visualization", height = 510, width = 810,bg=self.bgColor,
+                                                fg=self.fgColor)
         self.labelframeSettings.place(x=0, y=0)
         
         ''' add button to create data '''
-        self.nextWindow = Button(self, text='Next window', command=self.create_data,height = 5, width = 10)
+        self.nextWindow = Button(self, text='Next window', command=self.create_data,height = 5, width = 10,bg=self.bgColor,
+                                                fg=self.fgColor)
         self.nextWindow.place(x = 450, y = 530)
         
         ''' availabe datasets - add new dataset name here '''
@@ -204,11 +216,16 @@ class Application(tk.Frame):
         
         ''' reset/create canvas '''
         if self.figureHandle == 0:
-            plt.ioff() # disable ineractive mode to surpress empty figure
-            self.figureHandle = plt.figure(facecolor="white")
+            #plt.ioff() # disable ineractive mode to surpress empty figure
+            #self.figureHandle = plt.figure(facecolor='k')
+            #self.figureHandle = matplotlib.figure.Figure()
+            self.figureHandle = Figure(figsize=(7,5), dpi=100)
+            self.axesHandle = self.figureHandle.add_subplot(111)
         else:
-            #.figureHandle.clear(True)
-            plt.clf()
+            #self.figureHandle.clear(True)
+            pass
+            #plt.clf()
+            #matplotlib.figure.clf()
             #self.canvas.destroy()
         
         ''' reset/create canvas '''
@@ -218,11 +235,11 @@ class Application(tk.Frame):
             pass 
         
         self.canvas = FigureCanvasTkAgg(self.figureHandle, self.labelframeSettings)
-        self.canvas.draw()
-        self.canvas.get_tk_widget().pack(side=tk.RIGHT, fill=tk.NONE, expand=False) 
+        #self.canvas.draw()
+        self.canvas.get_tk_widget().pack(side=tk.RIGHT, fill=tk.NONE, expand=False)
         #self.canvas.get_tk_widget().place(x=320, y=40)
         
-        self.dataset.plotData(self.figureHandle)
+        self.plotData()
 
         # toolbar = NavigationToolbar2Tk(canvas, self)
         # toolbar.update()
@@ -241,20 +258,91 @@ class Application(tk.Frame):
     #     dataSettingsOxData = self.dataset.returnDataSettings('C1')
 
         
-    def popup_bonus(self):
-        self.pop_up = tk.Toplevel()
-        self.pop_up.wm_title("Results")
-        self.pop_up.geometry("640x485")
+    # def popup_bonus(self):
+    #     self.pop_up = tk.Toplevel()
+    #     self.pop_up.wm_title("Results")
+    #     self.pop_up.geometry("640x485")
         
-        # ''' button to close pop up '''
-        # b = Button(self.pop_up, text="Okay", command=self.pop_up.destroy)
-        # b.grid(row=1, column=0)
+    #     # ''' button to close pop up '''
+    #     # b = Button(self.pop_up, text="Okay", command=self.pop_up.destroy)
+    #     # b.grid(row=1, column=0)
         
-        ''' canvas for plot '''
-        canvas = FigureCanvasTkAgg(self.figureHandle, self.pop_up)
-        canvas.draw()
-        #self.canvas.get_tk_widget().pack(side=tk.RIGHT, fill=tk.NONE, expand=False) 
-        canvas.get_tk_widget().place(x=0, y=0)
+    #     ''' canvas for plot '''
+    #     canvas = FigureCanvasTkAgg(self.figureHandle, self.pop_up)
+    #     canvas.draw()
+    #     #self.canvas.get_tk_widget().pack(side=tk.RIGHT, fill=tk.NONE, expand=False) 
+    #     canvas.get_tk_widget().place(x=0, y=0)
+
+    # ''' function calls '''
+    def plotData(self):
+
+        # plt.rcParams.update({'font.size': 8})
+
+        #matplotlib.figure(fig.number)
+
+        # ''' signal curve ''' 
+        # ax = plt.gca()
+        # plt.setp(ax.spines.values(), linewidth=2)
+        # #plt.grid(True)
+
+        # #dataPointer = self.OxData.dataPointer
+        # #window = self.OxData.window
+        # #data = self.OxData.data['PLETH'][dataPointer:dataPointer+window]
+        # #data = np.random.randint(-2,3,(150,))
+        # #plt.plot(np.arange(0,len(data)),data) #,cmap='viridis')
+        # #plt.clim(limit_low,limit_high) 
+        # #plt.set_cmap('viridis')
+        # plt.title('Pleth signal')
+
+        # #xTickArray = np.arange(dataPointer,dataPointer+window)
+        # #xTickLabels = xTickArray/0.75
+
+        # #plt.xticks(xTickArray,xTickLabels)
+        # self.axesHandle.set_xlabel('time [ms]')
+        # self.axesHandle.set_ylabel('amplitude')
+        # self.axesHandle.set_ylim((20000,40000))
+        # self.axesHandle.grid()
+
+        dataPointer = 0
+        window = self.dataset.OxData.window
+        numberOfSamples = self.dataset.OxData.nSamples
+        
+        #data = np.random.randint(-2,3,(150,))
+
+        #plt.ion()
+        
+        # scan mode
+        for dataPointer in range(0,numberOfSamples-window,floor(1*self.dataset.OxData.Fs)):
+            self.axesHandle.set_xlabel('time [ms]')
+            self.axesHandle.set_ylabel('amplitude')
+            self.axesHandle.set_ylim((25000,40000))
+            self.axesHandle.grid()
+        #for i in range(0,numberOfSamples-window):
+            #ax = plt.gca()
+            #plt.figure(fig.number)
+            #plt.ioff()
+            data = self.dataset.OxData.data['PLETH'][dataPointer:dataPointer+window]
+            self.axesHandle.plot(np.arange(0,len(data)),data) #,cmap='viridis')
+            #plt.draw()
+            #dataPointer += 1 #floor(self.OxData.Fs)
+            #plt.pause(floor(0.1/self.OxData.Fs))
+            self.canvas.draw()
+            
+            self.axesHandle.clear()
+            #self.canvas.draw()
+            #canvas.draw()
+            self.canvas.flush_events()
+            time.sleep(0.1)
+
+        #plt.ioff()
+
+        # increment data pointer for next window
+        #self.OxData.dataPointer = dataPointer + window
+
+        return 0
+        
+    def calculateOx(self):
+        return 85
             
 def main():
     root = tk.Tk()

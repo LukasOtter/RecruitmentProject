@@ -32,6 +32,8 @@ class OxData():
         self.data = pd.read_csv('./data/' + file,sep = ";")
         #print(self.data['PLETH'].head())
 
+        self.nSamples = len(self.data)
+
         # add code to load data into pandas dataframe
 
     def __len__(self):
