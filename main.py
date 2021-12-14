@@ -251,95 +251,41 @@ class Application(tk.Frame):
         #self.im_Oxygen.configure(text = "Oxygen:\t" + str(round(im_oxygen_value,2)))
 
         #''' show dataset parameters '''
-        #self.configureDatasetParameters()
- 
-    # def configureDatasetParameters(self):
-    #     ''' update dataset paramater pannel values '''
-    #     dataSettingsOxData = self.dataset.returnDataSettings('C1')
+        #self.configureDatasetParameters() 
 
-        
-    # def popup_bonus(self):
-    #     self.pop_up = tk.Toplevel()
-    #     self.pop_up.wm_title("Results")
-    #     self.pop_up.geometry("640x485")
-        
-    #     # ''' button to close pop up '''
-    #     # b = Button(self.pop_up, text="Okay", command=self.pop_up.destroy)
-    #     # b.grid(row=1, column=0)
-        
-    #     ''' canvas for plot '''
-    #     canvas = FigureCanvasTkAgg(self.figureHandle, self.pop_up)
-    #     canvas.draw()
-    #     #self.canvas.get_tk_widget().pack(side=tk.RIGHT, fill=tk.NONE, expand=False) 
-    #     canvas.get_tk_widget().place(x=0, y=0)
-
-    # ''' function calls '''
+    # helper methods
     def plotData(self):
 
         # plt.rcParams.update({'font.size': 8})
 
-        #matplotlib.figure(fig.number)
-
-        # ''' signal curve ''' 
-        # ax = plt.gca()
-        # plt.setp(ax.spines.values(), linewidth=2)
-        # #plt.grid(True)
-
-        # #dataPointer = self.OxData.dataPointer
-        # #window = self.OxData.window
-        # #data = self.OxData.data['PLETH'][dataPointer:dataPointer+window]
-        # #data = np.random.randint(-2,3,(150,))
-        # #plt.plot(np.arange(0,len(data)),data) #,cmap='viridis')
-        # #plt.clim(limit_low,limit_high) 
-        # #plt.set_cmap('viridis')
-        # plt.title('Pleth signal')
-
-        # #xTickArray = np.arange(dataPointer,dataPointer+window)
-        # #xTickLabels = xTickArray/0.75
-
-        # #plt.xticks(xTickArray,xTickLabels)
-        # self.axesHandle.set_xlabel('time [ms]')
-        # self.axesHandle.set_ylabel('amplitude')
-        # self.axesHandle.set_ylim((20000,40000))
-        # self.axesHandle.grid()
-
         dataPointer = 0
         window = self.dataset.OxData.window
         numberOfSamples = self.dataset.OxData.nSamples
-        
-        #data = np.random.randint(-2,3,(150,))
+        Fs = self.dataset.OxData.Fs
 
-        #plt.ion()
-        
-        # scan mode
-        for dataPointer in range(0,numberOfSamples-window,floor(1*self.dataset.OxData.Fs)):
-            self.axesHandle.set_xlabel('time [ms]')
+        for dataPointer in range(0,numberOfSamples-window,floor(0.1*self.dataset.OxData.Fs)):
+
+            # label figure
+            xTickArray = np.arange(0,window+Fs,Fs)
+            xTickLabels = np.flip(xTickArray/(Fs))
+            self.axesHandle.set_xticks(xTickArray , minor=False)
+            self.axesHandle.set_xticklabels(xTickLabels, fontdict=None, minor=False)
+
+            self.axesHandle.set_xlabel('time relative to current measurement [s]')
             self.axesHandle.set_ylabel('amplitude')
             self.axesHandle.set_ylim((25000,40000))
             self.axesHandle.grid()
-        #for i in range(0,numberOfSamples-window):
-            #ax = plt.gca()
-            #plt.figure(fig.number)
-            #plt.ioff()
+
+            # create line plot
             data = self.dataset.OxData.data['PLETH'][dataPointer:dataPointer+window]
             self.axesHandle.plot(np.arange(0,len(data)),data) #,cmap='viridis')
-            #plt.draw()
-            #dataPointer += 1 #floor(self.OxData.Fs)
-            #plt.pause(floor(0.1/self.OxData.Fs))
             self.canvas.draw()
             
+            # refresh figure for "real-time" visualization 
             self.axesHandle.clear()
-            #self.canvas.draw()
-            #canvas.draw()
             self.canvas.flush_events()
             time.sleep(0.1)
-
-        #plt.ioff()
-
-        # increment data pointer for next window
-        #self.OxData.dataPointer = dataPointer + window
-
-        return 0
+        #return 0
         
     def calculateOx(self):
         return 85
