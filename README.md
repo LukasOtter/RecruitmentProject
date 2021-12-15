@@ -4,6 +4,7 @@ Application allows the visualization of the pleth, hearthrate and functional blo
 
 
 Run *./Application.py* script to start the GUI.
+Press _Scan data_ button to scan the file in the data folder.
 
 Required packages: _Python 3.-, Tkinter, Matplotlib, Numpy_
 
