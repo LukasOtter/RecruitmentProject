@@ -8,7 +8,6 @@ Created on  10.12.2021
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 from StreamHandler import StreamHandler
 

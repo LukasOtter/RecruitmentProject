@@ -7,9 +7,7 @@ Created on Thu Nov 12 14:56:28 2020
 Class for dataset to allow embedding in GUI
 """
 
-import matplotlib
 import matplotlib.pyplot as plt
-from copy import deepcopy
 import numpy as np
 
 # custom classes
