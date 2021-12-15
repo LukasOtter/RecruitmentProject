@@ -5,28 +5,31 @@ Created on 10.12.2021
 @author: Lukas Otter
 
 GUI based on the tkinter backend that displays a visualization of a datastream 
-of a OEM III Pulse Oximetry Module from Nonin
+of a OEM III Pulse Oximetry Module developed by Nonin.
 
 TODO:
 - handle file closing
 
 """
 
+# import tkinter as GUI backend
 import tkinter as tk
 from tkinter import *
-from Dataset import Dataset
-
 import matplotlib
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 
-from math import floor,ceil
 import numpy as np
 import time
+from math import floor,ceil
+
+# custom classes
+from Dataset import Dataset
 
 class Application(tk.Frame):
+    # main application class
 
     def __init__(self, master=None):
 
