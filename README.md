@@ -5,7 +5,7 @@ Application allows the visualization of the pleth, hearthrate and functional blo
 
 Run *./Application.py* script to start the GUI.
 
-Required packages: _Python 3.-, Tkinter, matplotlib, numpy_
+Required packages: _Python 3.-, Tkinter, Matplotlib, Numpy_
 
 
 Sample GUI putput:
