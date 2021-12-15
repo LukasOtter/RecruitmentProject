@@ -24,8 +24,8 @@ class OxData():
         self.file = file
         
         self.dataPointer = 0      # pointer to reference different samples
-        self.Fs = 75              # sampling frequency
-        self.window = 5*self.Fs   # 5 second window
+        self.Fs = 75              # sampling frequency (3 packages)
+        self.window = 5*self.Fs   # 5 second window (15 packages)
 
         #data_path = './data/' + file
 
