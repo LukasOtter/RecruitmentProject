@@ -24,34 +24,85 @@ class StreamHandler():
 
         # format settings
         self.frameLength = 5
-        self.packetLength = 25
+        self.PackageLength = 25
 
-        file = open('./data/' + filePath,"rb")
+        file = open('./data/' + filePath,"rb")#
+
+        self.frameSync = False
+        self.packageSync = False
 
         #with open(path, 'rb') as f:
         #   text = f.read()
         self.file = file
-
         self.file.read(1) # offset needs to be determined by synchronizeStream method
+        self.frameSync = True
 
-    def readPacket(self):
+    def readPackage(self):
+        # reads package as list of lists (frames)
         print("STATUS: PLETH: ADDON: CHECK")
+        package = []
 
-        for i in range(0,self.packetLength):
-            newFrame = self.readFrame()
-            integerList = [newFrame[0], (newFrame[1]<<8)+newFrame[2],newFrame[3], newFrame[4]]
-            frameLine = str(integerList)    # PLETH(MSB)*256 + PLETH(LSB)
-            CHECK = sum(newFrame[:-1])%256  # verify check sum
+        for frame in range(0,self.PackageLength):
+
+            # synchronize package
+            if not self.packageSync:
+                newFrame = self.synchronizeStream()     # returns package starting value. Needs to be handled separatelly due to read pointer position.
+            else:
+                newFrame = self.readFrame()
+
+            integerList = self.processFrame(newFrame,index=frame+1)
+            package.append(integerList)
+
+        print(package)
+
+        return package
+            
+    def processFrame(self,newFrame,index=1,checkCHK = True,printLine = False):
+        # precesses bitstream according to datasheet, validates checksum
+        integerList = [index, newFrame[0], (newFrame[1]<<8)+newFrame[2],newFrame[3], newFrame[4]]
+        frameLine = str(integerList)        # PLETH(MSB)*256 + PLETH(LSB)
+
+        if checkCHK:
+            if not self.checkFrameCHK(newFrame):
+                print("ERROR: Checksum of frame number " + str(index) + " not correct.")
+
+        if printLine:
             print(frameLine)
-            print("CHECK:", CHECK)
+            print("CHECK:", self.checkFrameCHK(newFrame))
+            print("STATUS:", newFrame[0] & 1)   # check if LSB of STATUS byte is one to determine first frame of package
 
-    def readFrame(self):
-        newFrame = self.file.read(self.frameLength)
+        return integerList
+
+
+    def readFrame(self,nBytes=0):
+        if nBytes == 0:
+            nBytes = self.frameLength
+        newFrame = self.file.read(nBytes)
         return newFrame
 
+    @staticmethod
+    def checkFrameCHK(frame):
+        # calulates checksum of given frame and compares it with given value
+        checkSum = sum(frame[:-1])%256
+        return (frame[-1]== checkSum)   # return boolean
+ 
     def synchronizeStream(self):
         # find first frame in package
-        return 0
+        syncBit = 0
+        counter = 0
+        while(syncBit != 1):
+            newFrame = self.readFrame()
+            syncBit = (newFrame[0] & 1)
+            counter += 1
+            if counter == 75:           # TO DO: improve error handling
+                print("Package synchronization could not be determined from given Bytes.")
+                print("Check frame definition for correct Byte synchronization.")
+                break 
+
+        if syncBit == 1:
+            print("Packages synchronization successful!")
+            self.packageSync = True
+        return newFrame
 
     def __len__(self):
         return len(self.data)
@@ -69,7 +120,7 @@ class StreamHandler():
 
 def main():
     streamObj = StreamHandler()
-    streamObj.readPacket()
+    streamObj.readPackage()
     
 if __name__ == '__main__':
     main()
