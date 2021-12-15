@@ -145,8 +145,8 @@ class Application(tk.Frame):
 
     # helper methods
     def plotData(self):
-        # visualizes data from the read file in GUI in a "real-time-like" motion
-        # plt.rcParams.update({'font.size': 8})
+        # visualizes data from the read file in a matplotlib plot embedde in 
+        # the GUI in a "real-time-like" motion
 
         dataPointer = 0
         window = self.dataset.OxData.window
@@ -155,7 +155,7 @@ class Application(tk.Frame):
 
         step = floor(self.dataset.OxData.Fs/3) # one frame 
 
-        # loop which updates the pleth, HR and SpO2
+        # loop which updates the pleth, HR and SpO2 in the GUI, plot is recreated in each run
         for dataPointer in range(0,numberOfSamples-window,step):
 
             # label figure
@@ -165,7 +165,7 @@ class Application(tk.Frame):
             self.axesHandle.set_xticklabels(xTickLabels, fontdict=None, minor=False)
 
             self.axesHandle.set_xlabel('time relative to current measurement [s]')
-            self.axesHandle.set_ylabel('amplitude')
+            self.axesHandle.set_ylabel('pleth signal')
             self.axesHandle.set_ylim((25000,40000))
             self.axesHandle.grid()
 
