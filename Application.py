@@ -129,10 +129,10 @@ class Application(tk.Frame):
             self.axesHandle = self.figureHandle.add_subplot(111)
         else:
             #self.figureHandle.clear(True)
-            #pass
+            pass
             #plt.clf()
             #matplotlib.figure.clf()
-            self.canvas.destroy()
+            #self.canvas.destroy()
         
         # reset/create canvas
         try: 
