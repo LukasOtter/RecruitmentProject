@@ -2,7 +2,7 @@
 """
 Created on 10.12.2021
 
-@author: Lukas
+@author: Lukas Otter
 
 GUI based on the tkinter backend that displays a visualization of a datastream 
 of a OEM III Pulse Oximetry Module from Nonin
@@ -100,7 +100,6 @@ class Application(tk.Frame):
         self.datasetName = StringVar(self)
         self.datasetName.set(DATASETS_OxData[0]) # default value
 
-
         # Evaluation parameters
         self.labelframeHR = LabelFrame(self.master, text="Heart rate:", height = 200, width = 200,bg=self.bgColor,
                                                 fg=self.fgColor)
@@ -146,7 +145,7 @@ class Application(tk.Frame):
 
     # helper methods
     def plotData(self):
-
+        # visualizes data from the read file in GUI in a "real-time-like" motion
         # plt.rcParams.update({'font.size': 8})
 
         dataPointer = 0
@@ -159,7 +158,6 @@ class Application(tk.Frame):
         # loop which updates the pleth, HR and SpO2
         for dataPointer in range(0,numberOfSamples-window,step):
 
-            #print(dataPointer)
             # label figure
             xTickArray = np.arange(0,window+Fs,Fs)
             xTickLabels = np.flip(xTickArray/(Fs))

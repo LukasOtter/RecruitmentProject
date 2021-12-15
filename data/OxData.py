@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Created on  10.12.2021
+Created on 10.12.2021
 
-@author: Lukas
+@author: Lukas Otter
+
+Specific class for the oxygen saturation data and its formatting
 
 """
 
@@ -28,6 +30,7 @@ class OxData():
         self.Fs = 75              # sampling frequency (3 packages)
         self.window = 5*self.Fs   # 5 second window (15 packages)
 
+        # simpler version with .csv input
         #data_path = './data/' + file
         #self.data = pd.read_csv('./data/' + file,sep = ";")
 

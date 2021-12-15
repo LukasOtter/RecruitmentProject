@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Nov 12 14:56:28 2020
+Created on 10.12.2021
 
-@author: Lukas
+@author: Lukas Otter
 
 Class for dataset to allow embedding in GUI
 """
