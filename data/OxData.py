@@ -11,6 +11,7 @@ Specific class for the oxygen saturation data and its formatting
 import matplotlib.pyplot as plt
 import numpy as np
 
+# custom classes
 from StreamHandler import StreamHandler
 
 class OxData():
