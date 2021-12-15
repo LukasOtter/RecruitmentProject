@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on  10.12.2020
+Created on  10.12.2021
 
 @author: Lukas
 
@@ -9,6 +9,8 @@ Created on  10.12.2020
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+from StreamHandler import StreamHandler
 
 class OxData():
     data_file = 'sensor-data-60seconds.csv'
@@ -28,24 +30,10 @@ class OxData():
         self.window = 5*self.Fs   # 5 second window (15 packages)
 
         #data_path = './data/' + file
+        #self.data = pd.read_csv('./data/' + file,sep = ";")
 
-        self.data = pd.read_csv('./data/' + file,sep = ";")
-        #print(self.data['PLETH'].head())
+        streamObj = StreamHandler(fileName='sensor-data-60seconds.dat')
+        self.data = streamObj.readStreamFile()
 
-        self.nSamples = len(self.data)
+        self.nSamples = len(self.data['HR'])*25
 
-        # add code to load data into pandas dataframe
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, idx:int):
-        """
-        Args:
-            index (int): Index
-        Returns:
-            tuple: (image, target) where target is index of the target class.
-        """
-        sample = self.data[idx]
-
-        return sample
