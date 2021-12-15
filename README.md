@@ -9,7 +9,7 @@ Press _Scan data_ button to scan the file in the data folder.
 Required packages: _Python 3.-, Tkinter, Matplotlib, Numpy_
 
 
-Sample GUI putput:
+Example of program putput:
 
 ![Alt text](examples/sampleGUIoutput.jpg?raw=true "GUI")
 
