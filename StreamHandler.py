@@ -44,8 +44,8 @@ class StreamHandler():
         
         self.file = file
         self.openFile = True
-        self.file.read(1) # offset needs to be determined by synchronizeStream method
-        self.frameSync = True
+        #self.file.read(1) # offset needs to be determined by synchronizePackage method
+        #self.frameSync = True
 
     def readStreamFile(self):
         # reads all packages in file
@@ -67,6 +67,9 @@ class StreamHandler():
         data['HR'] = np.asarray(data['HR'])
         data['SpO2'] = np.asarray(data['SpO2'])
 
+        print("Decoded data transferred to application!")
+        #print(data['data'])
+
         return data
 
     def readPackage(self):
@@ -75,10 +78,17 @@ class StreamHandler():
 
         for frame in range(0,self.PackageLength):
             # synchronize package
+            tmpFrame = []
+            inputFlag = False
+            if not self.frameSync:
+                newFrame = self.synchronizeFrame()                      # returns package starting value. 
+                tmpFrame = newFrame                                     # Needs to be handled separatelly 
+                inputFlag = True                                        # due to read pointer position.
+
             if not self.packageSync:
-                newFrame = self.synchronizeStream()     # returns package starting value. 
-                                                        # Needs to be handled separatelly 
-                                                        # due to read pointer position.
+                newFrame = self.synchronizePackage(tmpFrame,inputFlag)  # returns package starting value. 
+                                                                        # Needs to be handled separatelly 
+                                                                        # due to read pointer position.
             else:
                 newFrame = self.readFrame()
 
@@ -136,20 +146,49 @@ class StreamHandler():
         checkSum = sum(frame[:-1])%256
         return (frame[-1]== checkSum)   # return boolean
  
-    def synchronizeStream(self):
+    def synchronizePackage(self,newFrame=[],inputFlag=False):
         # finds first complete frame in package
         syncBit = 0
         counter = 0
         while(syncBit != 1):
-            newFrame = self.readFrame()
+            if not inputFlag: 
+                newFrame = self.readFrame()
+            else:
+                inputFlag = False
+
             syncBit = (newFrame[0] & 1) # bitwise comparison with one to check LSB of status Byte
             counter += 1
             if counter == 75:           # TO DO: improve error handling
-                print("Package synchronization could not be determined from given Bytes.")
-                print("Check frame definition for correct Byte synchronization.")
+                print("Package synchronization not successful with given Bytes.")
+                print("Check package definition for correct synchronization.")
                 break 
 
         if syncBit == 1:
             print("Packages synchronization successful!")
             self.packageSync = True
+        return newFrame                 # frame is returned since the read method cannot go back in file
+
+    def synchronizeFrame(self):
+        # finds first complete frame in package
+        syncBit = 0
+        counter = 0
+        
+        newFrame = self.readFrame()
+        
+        checkSum = self.checkFrameCHK(newFrame)
+
+        while(checkSum != True):
+            newByte = self.file.read(1)
+            newFrame = newFrame + newByte
+            newFrame = newFrame[1:]
+            checkSum = self.checkFrameCHK(newFrame)
+            counter += 1
+            if counter == 25:           # TO DO: improve error handling
+                print("Byte synchronization not successful with given Bytes.")
+                print("Check frame definition for correct synchronization.")
+                break 
+
+        if checkSum:
+            print("Frame synchronization successful!")
+            self.frameSync = True
         return newFrame                 # frame is returned since the read method cannot go back in file
