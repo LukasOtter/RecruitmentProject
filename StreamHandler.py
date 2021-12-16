@@ -77,8 +77,8 @@ class StreamHandler():
             tmpFrame = []
             inputFlag = False
             if not self.frameSync:
-                newFrame = self.synchronizeFrame()                      # returns package starting value. 
-                tmpFrame = newFrame                                     # Needs to be handled separatelly 
+                newFrame = self.synchronizeFrame()                      # returns current frame. 
+                tmpFrame = newFrame                                     # Needs to be passed separatelly 
                 inputFlag = True                                        # due to read pointer position.
 
             if not self.packageSync:
