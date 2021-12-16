@@ -7,10 +7,8 @@ Created on 15.12.2021
 Class to handle the decoding of .dat file (data format #7)
 
 TODO: 
-- implement frame synchronization. So far, the first STATUS Byte in the input file
- is detected using a predefined, file specific offset
-
 - more elegant handling of read operation. Use "with" syntax
+
 """
 
 import matplotlib.pyplot as plt
@@ -44,8 +42,6 @@ class StreamHandler():
         
         self.file = file
         self.openFile = True
-        #self.file.read(1) # offset needs to be determined by synchronizePackage method
-        #self.frameSync = True
 
     def readStreamFile(self):
         # reads all packages in file
